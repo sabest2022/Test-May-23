@@ -1,0 +1,19 @@
+{
+    "name": "vaimo/backend-internship-test",
+    "description": "Internship tests on PHP",
+    "authors": [
+        {
+            "name": "MD Shahriar Siraj",
+            "email": "shahriar.siraj@vaimo.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vaimo\\BackendInternshipTest\\": ""
+        }
+    }
+}
