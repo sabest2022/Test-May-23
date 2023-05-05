@@ -32,11 +32,9 @@ var Products = {
         const productName = $product.find('h6').text();
         const productPrice = parseFloat($product.data('price'));
         let productQty = parseFloat($product.find('.qty-input').val());
-
         if (!productQty || productQty <= 0) {
             productQty = 1;
         }
-
         if (Products.cartData.hasOwnProperty(productId)) {
             Products.cartData[productId]['qty'] += productQty;
         } else {
@@ -44,11 +42,23 @@ var Products = {
                 'name': productName,
                 'price': productPrice,
                 'qty': productQty,
-                'img': productImg
+                'img': productImg,
             };
         }
-
         Products.updateCart();
+    },
+    changeQuantity: function (productId, action) {
+        if (Products.cartData.hasOwnProperty(productId)) {
+            const currentQty = Products.cartData[productId]['qty'];
+            let newQty = 0;
+            if (action === 'add') {
+                newQty = currentQty + 1;
+            } else if (action === 'subtract') {
+                newQty = currentQty - 1;
+            }
+            Products.cartData[productId]['qty'] = newQty;
+            Products.updateCart();
+        }
     },
 
     updateCart: function (productId, newQty) {
@@ -60,7 +70,6 @@ var Products = {
                 const productName = Products.cartData[productId]['name'];
                 const productPrice = Products.cartData[productId]['price'];
                 const productQty = Products.cartData[productId]['qty'];
-                console.log(Products.cartData[productId]);
                 const productImage = Products.cartData[productId]['img'];
                 const subtotal = productPrice * productQty;
                 const minusButton = `<button class="change-quantity minus" data-id="${productId}">-</button>`;
@@ -69,7 +78,7 @@ var Products = {
                 if (productQty === 0) {
                     Products.removeFromCart(productId);
                 } else {
-                    // creating-adding a cart-item and updating the cart-items
+                    // cr e ating-adding a cart-item and updating the cart-items
                     cartItems += `<div class="cart-item">
                     <div class="cart-item-details">
                         <div class="cart-item-details-img">
@@ -77,7 +86,7 @@ var Products = {
                         </div>
                         <div class="cart-item-details-rest">
                             <div class="cart-item-details-nameprice">
-                                <span class="cart-item-name">${productName.substring(0, 20) + '...'}</span></br>
+                                <span cla ss="cart-item-name"> $ ${productName.substring(0, 20) + '...'}</span></br>
                             </div>
                             <div class="cart-item-rest">
                                  <div class="cart-item-qty">
@@ -94,27 +103,26 @@ var Products = {
                     $('.minicart-empty').css('display', 'none');
                 }
             }
-        }
-        // Update the cart items and total on the page
-        $('.cart-items').html(cartItems);
-        $('.cart-total').html(`Total: $${cartTotal.toFixed(2)}`);
 
+            // Update the cart items and total on the page
+            $('.cart-items').html(cartItems);
+            $('.cart-total').html(`Total: $${cartTotal.toFixed(2)}`);
+
+            // Add event listeners to plus and minus buttons
+            $('.change-quantity.plus').off().on('click', function () {
+                const productId = $(this).data('id');
+                Products.changeQuantity(productId, 'add');
+            });
+
+            $('.change-quantity.minus').off().on('click', function () {
+                const productId = $(this).data('id');
+                Products.changeQuantity(productId, 'subtract');
+            });
+        }
     },
 
-    // Add event listeners for the plus and minus buttons
-    $('.cart-items').on('click', '.change-quantity', function () {
-        const productId = $(this).data('id');
-        const currentQty = Products.cartData[productId]['qty'];
-        let newQty;
+}
 
-        if ($(this).hasClass('plus')) {
-            newQty = currentQty + 1;
-        } else {
-            newQty = currentQty - 1;
-        }
 
-        Products.updateCart(productId, newQty);
-    });
-};
+$(Products.init);
 
-$(Products.init); 
