@@ -42,13 +42,17 @@ class CartTest extends TestCase
         $this->model->add($product1);
         $this->model->add($product1);
         $this->model->add($product2);
+
+
         $this->model->changeQuantity($product1, 0);
         $this->model->changeQuantity($product2, 1);
+
         $this->model->add($product3);
         $this->model->remove($product3);
+
         $this->model->add($product4);
         $this->model->changeQuantity($product4, 5);
-
+        var_dump($this->model);
         $cartData = $this->model->getData();
         $this->assertCount(2, $cartData);
         return $this->model;
